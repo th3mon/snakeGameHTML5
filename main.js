@@ -7,15 +7,35 @@ var
   SNAKE = 1,
   FRUIT = 2,
 
-  LEFT = 0,
-  UP = 1,
-  RIGHT = 2,
-  DOWN = 3,
+  DIRECTION = {
+    LEFT: 0,
+    UP: 1,
+    RIGHT: 2,
+    DOWN: 3
+  },
 
   KEY_LEFT = 37,
   KEY_UP = 38,
   KEY_RIGHT = 39,
   KEY_DOWN = 40,
+
+  GAME = {
+    canvas: createCanvas(),
+    ctx: null,
+    keystate: {},
+    frames: 0,
+    score: 0,
+
+    attachEvents: function(){
+      document.addEventListener('keydown', function(event) {
+        this.keystate[event.keyCode] = true;
+      }.bind(this));
+
+      document.addEventListener('keyup', function(event) {
+        delete this.keystate[event.keyCode];
+      }.bind(this));
+    }
+  },
 
   grid = {
     width: null,
@@ -90,32 +110,27 @@ function setFood () {
   grid.set(FRUIT, randomPosition.x, randomPosition.y);
 }
 
-// Game object
-var
-  canvas,
-  ctx,
-  keystate,
-  frames,
-  score;
+function createCanvas () {
+  var canvas = document.createElement('canvas');
 
-function main () {
-  canvas = document.createElement('canvas');
   canvas.width = COLS * 20;
   canvas.height = ROWS * 20;
-  ctx = canvas.getContext('2d');
   document.body.appendChild(canvas);
+
+  return canvas;
+}
+
+function createContext () {
+  var ctx = GAME.canvas.getContext('2d');
+
   ctx.font = '12px Helvetica';
 
-  frames = 0;
-  keystate = {};
+  return ctx;
+}
 
-  document.addEventListener('keydown', function(event) {
-    keystate[event.keyCode] = true;
-  });
-
-  document.addEventListener('keyup', function(event) {
-    delete keystate[event.keyCode];
-  });
+function main () {
+  GAME.ctx = createContext();
+  GAME.attachEvents();
 
   init();
   loop();
@@ -127,9 +142,8 @@ function init () {
     y: ROWS - 1
   };
 
-  score = 0;
   grid.init(EMPTY, COLS, ROWS);
-  snake.init(UP, startPoint.x, startPoint.y);
+  snake.init(DIRECTION.UP, startPoint.x, startPoint.y);
   grid.set(SNAKE, startPoint.x, startPoint.y);
 
   setFood();
@@ -139,7 +153,7 @@ function loop () {
   update();
   draw();
 
-  window.requestAnimationFrame(loop, canvas);
+  window.requestAnimationFrame(loop, GAME.canvas);
 }
 
 function update () {
@@ -148,39 +162,39 @@ function update () {
     ny,
     tail;
 
-  frames++;
+  GAME.frames++;
 
-  if (keystate[KEY_LEFT] && (snake.direction !== RIGHT)) {
-    snake.direction = LEFT;
+  if (GAME.keystate[KEY_LEFT] && (snake.direction !== DIRECTION.RIGHT)) {
+    snake.direction = DIRECTION.LEFT;
   }
 
-  if (keystate[KEY_UP] && (snake.direction !== DOWN)) {
-    snake.direction = UP;
+  if (GAME.keystate[KEY_UP] && (snake.direction !== DIRECTION.DOWN)) {
+    snake.direction = DIRECTION.UP;
   }
 
-  if (keystate[KEY_RIGHT] && (snake.direction !== LEFT)) {
-    snake.direction = RIGHT;
+  if (GAME.keystate[KEY_RIGHT] && (snake.direction !== DIRECTION.LEFT)) {
+    snake.direction = DIRECTION.RIGHT;
   }
 
-  if (keystate[KEY_DOWN] && (snake.direction !== UP)) {
-    snake.direction = DOWN;
+  if (GAME.keystate[KEY_DOWN] && (snake.direction !== DIRECTION.UP)) {
+    snake.direction = DIRECTION.DOWN;
   }
 
-  if (frames % 5 === 0) {
+  if (GAME.frames % 5 === 0) {
     nx = snake.last.x;
     ny = snake.last.y;
 
     switch (snake.direction) {
-      case LEFT:
+      case DIRECTION.LEFT:
         nx--;
         break;
-      case UP:
+      case DIRECTION.UP:
         ny--;
         break;
-      case RIGHT:
+      case DIRECTION.RIGHT:
         nx++;
         break;
-      case DOWN:
+      case DIRECTION.DOWN:
         ny++;
         break;
     }
@@ -198,7 +212,7 @@ function update () {
         y: ny
       };
 
-      score += 1;
+      GAME.score += 1;
       setFood();
     }
 
@@ -216,29 +230,29 @@ function update () {
 
 function draw () {
   var
-    tw = canvas.width / grid.width,
-    th = canvas.height / grid.height;
+    tw = GAME.canvas.width / grid.width,
+    th = GAME.canvas.height / grid.height;
 
   for (var x = 0; x < grid.width; x++) {
     for (var y = 0; y < grid.height; y++) {
       switch (grid.get(x, y)) {
         case EMPTY:
-          ctx.fillStyle = '#fff';
+          GAME.ctx.fillStyle = '#fff';
           break;
         case SNAKE:
-          ctx.fillStyle = '#0ff';
+          GAME.ctx.fillStyle = '#0ff';
           break;
         case FRUIT:
-          ctx.fillStyle = '#f00';
+          GAME.ctx.fillStyle = '#f00';
           break;
       }
 
-      ctx.fillRect(x * tw, y * th, tw, th);
+      GAME.ctx.fillRect(x * tw, y * th, tw, th);
     }
   }
 
-  ctx.fillStyle = '#000';
-  ctx.fillText('SCORRE: ' + score, 10, canvas.height - 10);
+  GAME.ctx.fillStyle = '#000';
+  GAME.ctx.fillText('SCORE: ' + GAME.score, 10, GAME.canvas.height - 10);
 }
 
 main();
