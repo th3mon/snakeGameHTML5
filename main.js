@@ -42,8 +42,7 @@ var
     height: null,
     _grid: null,
 
-    // TODO: WTF is var d?
-    init: function(d, colums, rows){
+    init: function(entity, colums, rows){
       this.width = colums;
       this.height = rows;
       this._grid = [];
@@ -52,7 +51,7 @@ var
         this._grid.push([]);
 
         for (var y = 0; y < rows; y++) {
-          this._grid[x].push(d);
+          this._grid[x].push(entity);
         }
       }
     },
