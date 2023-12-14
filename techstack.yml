@@ -1,11 +1,11 @@
 repo_name: th3mon/snakeGameHTML5
-report_id: 16b105d3c7d6f50d995f3d51edbe84c2
+report_id: 4d0bed4c922ec49049fb788627e7ec75
 repo_type: Public
-timestamp: '2023-11-09T12:44:22+00:00'
-requested_by: th3mon
+timestamp: '2023-12-14T09:26:28+00:00'
+requested_by: stack-file[bot]
 provider: github
 branch: master
-detected_tools_count: 3
+detected_tools_count: 4
 tools:
 - name: CSS 3
   description: The latest evolution of the Cascading Style Sheets language
@@ -35,3 +35,12 @@ tools:
   sub_category: Version Control System
   image_url: https://img.stackshare.io/service/1046/git.png
   detection_source: Repo Metadata
+- name: HTML
+  description: Hypertext Markup Language for creating web pages.
+  website_url: http://
+  open_source: false
+  hosted_saas: false
+  image_url: https://img.stackshare.io/service/2270/no-img-open-source.png
+  detection_source: index.html
+  last_updated_by: th3mon
+  last_updated_on: 2015-10-25 21:55:54.000000000 Z
